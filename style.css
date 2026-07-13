@@ -26,7 +26,7 @@ body {
 .app {
   max-width: 640px;
   margin: 0 auto;
-  padding: 16px;
+  padding: 10px 12px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -34,32 +34,46 @@ body {
 
 .app-header {
   text-align: center;
-  padding: 8px 0 20px;
+  padding: 4px 0 10px;
 }
 
 .app-header h1 {
   margin: 0;
-  font-size: 2rem;
+  font-size: 1.6rem;
 }
 
 .subtitle {
-  margin: 4px 0 0;
+  margin: 2px 0 0;
   color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.app-header.compact {
+  padding: 2px 0 4px;
+}
+
+.app-header.compact h1 {
+  font-size: 1.1rem;
+}
+
+.app-header.compact .subtitle {
+  display: none;
 }
 
 #app-main {
   flex: 1;
 }
 
-.screen.hidden {
+.screen.hidden,
+.hidden {
   display: none;
 }
 
 .hint {
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   text-align: center;
-  margin: 6px 0 14px;
+  margin: 4px 0 8px;
 }
 
 /* Setup screen */
@@ -89,18 +103,34 @@ body {
   gap: 8px;
 }
 
-.player-list li {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.player-list li.player-row {
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 10px 14px;
+  padding: 8px 10px;
   box-shadow: var(--shadow);
 }
 
-.player-list button {
+.player-row-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.player-name {
+  flex: 1;
+  text-align: left;
+}
+
+.avatar-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  line-height: 0;
+}
+
+.remove-btn {
   background: none;
   border: none;
   color: var(--danger);
@@ -108,6 +138,61 @@ body {
   cursor: pointer;
   line-height: 1;
   padding: 4px 8px;
+}
+
+/* Avatars */
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.avatar-emoji {
+  background: var(--accent-light);
+}
+
+.turn-banner .avatar {
+  width: 26px;
+  height: 26px;
+  font-size: 16px;
+  vertical-align: middle;
+}
+
+.avatar-picker {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.avatar-picker-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.swatch {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card-bg);
+  padding: 0;
+}
+
+.emoji-swatch {
+  border: 1px solid var(--border);
 }
 
 /* Buttons */
@@ -161,9 +246,15 @@ button {
 
 .game-actions {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 16px;
+  flex-direction: row;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.game-actions button {
+  flex: 1;
+  padding: 10px 8px;
+  font-size: 0.85rem;
 }
 
 /* Game screen */
@@ -171,10 +262,10 @@ button {
 .turn-banner {
   text-align: center;
   background: var(--accent-light);
-  border-radius: 12px;
-  padding: 10px;
-  margin-bottom: 12px;
-  font-size: 1.05rem;
+  border-radius: 10px;
+  padding: 8px;
+  margin-bottom: 8px;
+  font-size: 1rem;
 }
 
 .turn-banner strong {
@@ -191,21 +282,21 @@ button {
 .dice-row {
   display: flex;
   justify-content: center;
-  gap: 8px;
-  margin-bottom: 18px;
+  gap: 6px;
+  margin-bottom: 10px;
 }
 
 .die {
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  width: 58px;
-  height: 58px;
+  border-radius: 10px;
+  width: 44px;
+  height: 44px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   gap: 2px;
-  padding: 9px;
+  padding: 6px;
   box-shadow: var(--shadow);
   user-select: none;
 }
@@ -218,8 +309,8 @@ button {
   border-radius: 50%;
   align-self: center;
   justify-self: center;
-  width: 9px;
-  height: 9px;
+  width: 6px;
+  height: 6px;
 }
 
 .die .pip-on {
@@ -238,15 +329,22 @@ button {
 #scoreboard {
   border-collapse: collapse;
   width: 100%;
-  font-size: 0.92rem;
+  font-size: 0.85rem;
 }
 
 #scoreboard th,
 #scoreboard td {
-  padding: 8px 10px;
+  padding: 5px 7px;
   border-bottom: 1px solid var(--border);
   text-align: center;
   white-space: nowrap;
+}
+
+.th-player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
 }
 
 #scoreboard th.label,

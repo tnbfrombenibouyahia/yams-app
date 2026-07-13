@@ -20,6 +20,34 @@
     return pips;
   }
 
+  const AVATAR_COLORS = [
+    "#e63946",
+    "#f3722c",
+    "#f9c74f",
+    "#43aa8b",
+    "#4d908e",
+    "#277da1",
+    "#9d4edd",
+    "#f15bb5",
+  ];
+
+  const AVATAR_EMOJIS = [
+    "🦁", "🐯", "🐸", "🐵", "🦊", "🐼", "🐨", "🐰",
+    "🦄", "🐙", "🐷", "🐔", "🐢", "🐝", "🦋", "🐳",
+  ];
+
+  function avatarHtml(avatar) {
+    if (!avatar) return "";
+    if (avatar.type === "emoji") {
+      return `<span class="avatar avatar-emoji">${avatar.value}</span>`;
+    }
+    return `<span class="avatar avatar-color" style="background:${avatar.value}"></span>`;
+  }
+
+  function defaultAvatar(index) {
+    return { type: "color", value: AVATAR_COLORS[index % AVATAR_COLORS.length] };
+  }
+
   const CATEGORIES = [
     { key: "as", label: "As", section: "top", compute: (d) => sumValue(d, 1) },
     { key: "deux", label: "Deux", section: "top", compute: (d) => sumValue(d, 2) },
@@ -120,6 +148,7 @@
   }
 
   let state = loadState();
+  let openAvatarPickerId = null;
 
   function loadState() {
     try {
@@ -127,6 +156,9 @@
       if (!raw) return defaultState();
       const parsed = JSON.parse(raw);
       if (!parsed || !Array.isArray(parsed.players)) return defaultState();
+      parsed.players.forEach((p, i) => {
+        if (!p.avatar) p.avatar = defaultAvatar(i);
+      });
       return parsed;
     } catch (e) {
       return defaultState();
@@ -159,6 +191,7 @@
     state.players.push({
       id: `p${Date.now()}${Math.random().toString(36).slice(2, 6)}`,
       name: trimmed,
+      avatar: defaultAvatar(state.players.length),
       scores: emptyScores(),
     });
     saveState();
@@ -167,6 +200,20 @@
 
   function removePlayer(id) {
     state.players = state.players.filter((p) => p.id !== id);
+    saveState();
+    render();
+  }
+
+  function toggleAvatarPicker(id) {
+    openAvatarPickerId = openAvatarPickerId === id ? null : id;
+    render();
+  }
+
+  function setPlayerAvatar(id, avatar) {
+    const player = state.players.find((p) => p.id === id);
+    if (!player) return;
+    player.avatar = avatar;
+    openAvatarPickerId = null;
     saveState();
     render();
   }
@@ -228,6 +275,8 @@
   const currentPlayerNameEl = document.getElementById("current-player-name");
   const roundInfoEl = document.getElementById("round-info");
   const rankingList = document.getElementById("ranking-list");
+  const appHeaderEl = document.getElementById("app-header");
+  const appFooterEl = document.getElementById("app-footer");
 
   function roundsInfoText() {
     const totalRounds = CATEGORIES.length;
@@ -244,6 +293,8 @@
     setupScreen.classList.toggle("hidden", state.started);
     gameScreen.classList.toggle("hidden", !state.started || gameOver);
     gameoverScreen.classList.toggle("hidden", !gameOver);
+    appHeaderEl.classList.toggle("compact", state.started && !gameOver);
+    appFooterEl.classList.toggle("hidden", state.started && !gameOver);
 
     if (!state.started) {
       renderSetup();
@@ -254,13 +305,31 @@
     }
   }
 
+  function avatarPickerHtml(playerId) {
+    const colorButtons = AVATAR_COLORS.map(
+      (c) => `<button class="swatch" data-player="${playerId}" data-color="${c}" style="background:${c}" aria-label="Couleur"></button>`
+    ).join("");
+    const emojiButtons = AVATAR_EMOJIS.map(
+      (e) => `<button class="swatch emoji-swatch" data-player="${playerId}" data-emoji="${e}">${e}</button>`
+    ).join("");
+    return `
+      <div class="avatar-picker">
+        <div class="avatar-picker-row">${colorButtons}</div>
+        <div class="avatar-picker-row">${emojiButtons}</div>
+      </div>`;
+  }
+
   function renderSetup() {
     playerListEl.innerHTML = state.players
       .map(
         (p) => `
-      <li>
-        <span>${escapeHtml(p.name)}</span>
-        <button data-remove="${p.id}" aria-label="Retirer">×</button>
+      <li class="player-row">
+        <div class="player-row-main">
+          <button class="avatar-btn" data-avatar-toggle="${p.id}" aria-label="Choisir un avatar">${avatarHtml(p.avatar)}</button>
+          <span class="player-name">${escapeHtml(p.name)}</span>
+          <button class="remove-btn" data-remove="${p.id}" aria-label="Retirer">×</button>
+        </div>
+        ${openAvatarPickerId === p.id ? avatarPickerHtml(p.id) : ""}
       </li>`
       )
       .join("");
@@ -268,13 +337,26 @@
     playerListEl.querySelectorAll("[data-remove]").forEach((btn) => {
       btn.addEventListener("click", () => removePlayer(btn.getAttribute("data-remove")));
     });
+    playerListEl.querySelectorAll("[data-avatar-toggle]").forEach((btn) => {
+      btn.addEventListener("click", () => toggleAvatarPicker(btn.getAttribute("data-avatar-toggle")));
+    });
+    playerListEl.querySelectorAll("[data-color]").forEach((btn) => {
+      btn.addEventListener("click", () =>
+        setPlayerAvatar(btn.getAttribute("data-player"), { type: "color", value: btn.getAttribute("data-color") })
+      );
+    });
+    playerListEl.querySelectorAll("[data-emoji]").forEach((btn) => {
+      btn.addEventListener("click", () =>
+        setPlayerAvatar(btn.getAttribute("data-player"), { type: "emoji", value: btn.getAttribute("data-emoji") })
+      );
+    });
 
     setupHint.style.display = state.players.length === 0 ? "block" : "none";
   }
 
   function renderGame() {
     const player = state.players[state.currentPlayerIndex];
-    currentPlayerNameEl.textContent = player.name;
+    currentPlayerNameEl.innerHTML = `${avatarHtml(player.avatar)} ${escapeHtml(player.name)}`;
     roundInfoEl.textContent = roundsInfoText();
 
     diceRow.innerHTML = state.dice
@@ -292,7 +374,11 @@
 
   function buildScoreboardHtml() {
     const headerCells = state.players
-      .map((p, i) => `<th class="${i === state.currentPlayerIndex ? "col-current" : ""}">${escapeHtml(p.name)}</th>`)
+      .map(
+        (p, i) => `<th class="${i === state.currentPlayerIndex ? "col-current" : ""}">
+          <div class="th-player">${avatarHtml(p.avatar)}<span>${escapeHtml(p.name)}</span></div>
+        </th>`
+      )
       .join("");
 
     const rowsForKeys = (keys) =>
@@ -346,7 +432,7 @@
       .map(
         (p, i) => `
       <li>
-        <span>${i + 1}. ${escapeHtml(p.name)}</span>
+        <span>${i + 1}. ${avatarHtml(p.avatar)} ${escapeHtml(p.name)}</span>
         <strong>${totalScore(p.scores)}</strong>
       </li>`
       )
