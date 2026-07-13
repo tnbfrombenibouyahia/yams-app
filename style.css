@@ -1,5 +1,5 @@
 :root {
-  --bg: #f4f1ea;
+  --bg: #ffffff;
   --card-bg: #ffffff;
   --accent: #2f6f4f;
   --accent-dark: #1f4d36;
@@ -7,22 +7,9 @@
   --text: #22261f;
   --muted: #6b6f66;
   --border: #ddd8cc;
+  --filled-bg: #eeece3;
   --danger: #b3261e;
   --shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #14170f;
-    --card-bg: #1e2219;
-    --accent: #4fa87c;
-    --accent-dark: #3a8563;
-    --accent-light: #263427;
-    --text: #ece9e0;
-    --muted: #9a9d92;
-    --border: #333a2c;
-    --shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
-  }
 }
 
 * {
@@ -195,10 +182,10 @@ button {
   margin-left: 6px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .turn-banner strong {
-    color: var(--accent);
-  }
+.round-info {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
 .dice-row {
@@ -290,6 +277,17 @@ button {
   color: var(--border);
 }
 
+#scoreboard td.cell-filled {
+  background: var(--filled-bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+#scoreboard td.cell-filled .check {
+  color: var(--accent);
+  margin-right: 4px;
+}
+
 #scoreboard td.cell-playable {
   color: var(--accent-dark);
   font-weight: 700;
@@ -299,12 +297,6 @@ button {
 
 #scoreboard td.cell-playable:active {
   background: var(--accent-light);
-}
-
-@media (prefers-color-scheme: dark) {
-  #scoreboard td.cell-playable {
-    color: var(--accent);
-  }
 }
 
 .col-current {

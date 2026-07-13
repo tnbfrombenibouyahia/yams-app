@@ -226,7 +226,17 @@
   const diceRow = document.getElementById("dice-row");
   const scoreboard = document.getElementById("scoreboard");
   const currentPlayerNameEl = document.getElementById("current-player-name");
+  const roundInfoEl = document.getElementById("round-info");
   const rankingList = document.getElementById("ranking-list");
+
+  function roundsInfoText() {
+    const totalRounds = CATEGORIES.length;
+    const completedRounds = Math.floor(state.history.length / state.players.length);
+    const currentRound = Math.min(completedRounds + 1, totalRounds);
+    const remaining = totalRounds - completedRounds;
+    const plural = remaining > 1 ? "s" : "";
+    return `Manche ${currentRound} / ${totalRounds} — ${remaining} manche${plural} restante${plural}`;
+  }
 
   function render() {
     const gameOver = isGameOver();
@@ -265,6 +275,7 @@
   function renderGame() {
     const player = state.players[state.currentPlayerIndex];
     currentPlayerNameEl.textContent = player.name;
+    roundInfoEl.textContent = roundsInfoText();
 
     diceRow.innerHTML = state.dice
       .map((v, i) => `<div class="die" data-die="${i}">${dieFaceHtml(v)}</div>`)
@@ -292,7 +303,7 @@
             .map((p, i) => {
               const filled = p.scores[key];
               if (filled !== null) {
-                return `<td class="${i === state.currentPlayerIndex ? "col-current" : ""}">${filled}</td>`;
+                return `<td class="cell-filled"><span class="check">✓</span>${filled}</td>`;
               }
               if (i === state.currentPlayerIndex) {
                 const potential = cat.compute(state.dice);
