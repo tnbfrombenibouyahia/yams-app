@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Yams — Feuille de score</title>
+
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2f6f4f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Yams">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1>🎲 Yams</h1>
+      <p class="subtitle">Feuille de score</p>
+    </header>
+
+    <main id="app-main">
+      <section id="setup-screen" class="screen">
+        <h2>Qui joue ?</h2>
+        <form id="add-player-form" class="add-player-form">
+          <input type="text" id="player-name-input" placeholder="Nom du joueur" maxlength="20" autocomplete="off">
+          <button type="submit">Ajouter</button>
+        </form>
+        <ul id="player-list" class="player-list"></ul>
+        <p id="setup-hint" class="hint">Ajoutez au moins un joueur pour commencer.</p>
+        <button id="start-game-btn" class="primary-btn">Commencer la partie</button>
+      </section>
+
+      <section id="game-screen" class="screen hidden">
+        <div class="turn-banner">
+          <span>Au tour de</span>
+          <strong id="current-player-name"></strong>
+        </div>
+
+        <p class="hint">Entrez le résultat de vos vrais dés en touchant chaque dé.</p>
+        <div id="dice-row" class="dice-row"></div>
+
+        <div id="scoreboard-wrapper" class="scoreboard-wrapper">
+          <table id="scoreboard"></table>
+        </div>
+
+        <div class="game-actions">
+          <button id="undo-btn" class="secondary-btn">Annuler le dernier coup</button>
+          <button id="reset-btn" class="danger-btn">Nouvelle partie</button>
+        </div>
+      </section>
+
+      <section id="gameover-screen" class="screen hidden">
+        <h2>Partie terminée 🏆</h2>
+        <ol id="ranking-list" class="ranking-list"></ol>
+        <button id="new-game-btn" class="primary-btn">Nouvelle partie</button>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>Les scores sont sauvegardés automatiquement sur cet appareil.</p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

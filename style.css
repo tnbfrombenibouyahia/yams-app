@@ -1,0 +1,345 @@
+:root {
+  --bg: #f4f1ea;
+  --card-bg: #ffffff;
+  --accent: #2f6f4f;
+  --accent-dark: #1f4d36;
+  --accent-light: #e4efe8;
+  --text: #22261f;
+  --muted: #6b6f66;
+  --border: #ddd8cc;
+  --danger: #b3261e;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14170f;
+    --card-bg: #1e2219;
+    --accent: #4fa87c;
+    --accent-dark: #3a8563;
+    --accent-light: #263427;
+    --text: #ece9e0;
+    --muted: #9a9d92;
+    --border: #333a2c;
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.app {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  text-align: center;
+  padding: 8px 0 20px;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+#app-main {
+  flex: 1;
+}
+
+.screen.hidden {
+  display: none;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-align: center;
+  margin: 6px 0 14px;
+}
+
+/* Setup screen */
+
+.add-player-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.add-player-form input {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.player-list {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.player-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  box-shadow: var(--shadow);
+}
+
+.player-list button {
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-size: 1.2rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px 8px;
+}
+
+/* Buttons */
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.primary-btn,
+.add-player-form button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  width: 100%;
+}
+
+.add-player-form button {
+  width: auto;
+  padding: 10px 16px;
+}
+
+.primary-btn:active,
+.add-player-form button:active {
+  background: var(--accent-dark);
+}
+
+.secondary-btn {
+  background: var(--card-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  width: 100%;
+}
+
+.danger-btn {
+  background: none;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  width: 100%;
+}
+
+.game-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+/* Game screen */
+
+.turn-banner {
+  text-align: center;
+  background: var(--accent-light);
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 12px;
+  font-size: 1.05rem;
+}
+
+.turn-banner strong {
+  color: var(--accent-dark);
+  margin-left: 6px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .turn-banner strong {
+    color: var(--accent);
+  }
+}
+
+.dice-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.die {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: 58px;
+  height: 58px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 2px;
+  padding: 9px;
+  box-shadow: var(--shadow);
+  user-select: none;
+}
+
+.die:active {
+  transform: scale(0.95);
+}
+
+.die .pip {
+  border-radius: 50%;
+  align-self: center;
+  justify-self: center;
+  width: 9px;
+  height: 9px;
+}
+
+.die .pip-on {
+  background: var(--text);
+}
+
+/* Scoreboard */
+
+.scoreboard-wrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  background: var(--card-bg);
+}
+
+#scoreboard {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.92rem;
+}
+
+#scoreboard th,
+#scoreboard td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  white-space: nowrap;
+}
+
+#scoreboard th.label,
+#scoreboard td.label {
+  text-align: left;
+  color: var(--muted);
+  font-weight: 500;
+  white-space: normal;
+}
+
+#scoreboard thead th {
+  position: sticky;
+  top: 0;
+  background: var(--card-bg);
+}
+
+#scoreboard tr.current-player-col {
+  color: var(--accent-dark);
+}
+
+#scoreboard tr.subtotal-row td,
+#scoreboard tr.total-row td {
+  font-weight: 700;
+  background: var(--accent-light);
+}
+
+#scoreboard td.cell-empty {
+  color: var(--border);
+}
+
+#scoreboard td.cell-playable {
+  color: var(--accent-dark);
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+#scoreboard td.cell-playable:active {
+  background: var(--accent-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  #scoreboard td.cell-playable {
+    color: var(--accent);
+  }
+}
+
+.col-current {
+  background: var(--accent-light);
+}
+
+/* Game over */
+
+.ranking-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.ranking-list li {
+  display: flex;
+  justify-content: space-between;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  box-shadow: var(--shadow);
+}
+
+.ranking-list li:first-child {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+.app-footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.75rem;
+  padding: 20px 0 6px;
+}
